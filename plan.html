@@ -1,0 +1,1021 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Backend Roadmap Tracker (Jun 7 - Jul 20)</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Syne:wght@400;700;800&display=swap');
+
+*{margin:0;padding:0;box-sizing:border-box;}
+
+:root{
+  --bg:#070d1a;
+  --surface:#0d1829;
+  --surface2:#111f35;
+  --border:#1e3a5f;
+  --accent:#00d4ff;
+  --accent2:#00ff9d;
+  --accent3:#ff6b35;
+  --text:#c8d8e8;
+  --muted:#4a6a8a;
+  --phase1:#00d4ff;
+  --phase2:#a855f7;
+  --phase3:#f59e0b;
+  --phase4:#22c55e;
+  --phase5:#ff6b35;
+}
+
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:'JetBrains Mono',monospace;
+  padding:40px 20px;
+  min-height:100vh;
+  background-image:
+    radial-gradient(ellipse at 20% 10%, rgba(0,212,255,0.04) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 80%, rgba(0,255,157,0.03) 0%, transparent 50%);
+}
+
+h1{
+  font-family:'Syne',sans-serif;
+  font-size:clamp(22px,4vw,38px);
+  font-weight:800;
+  text-align:center;
+  letter-spacing:-1px;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+  background-clip:text;
+  margin-bottom:6px;
+}
+
+.subtitle{
+  text-align:center;
+  color:var(--muted);
+  font-size:13px;
+  margin-bottom:30px;
+  letter-spacing:2px;
+  text-transform:uppercase;
+}
+
+.progress-box{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:12px;
+  padding:24px;
+  margin-bottom:30px;
+  text-align:center;
+  position:relative;
+  overflow:hidden;
+}
+.progress-box::before{
+  content:'';
+  position:absolute;
+  top:0;left:0;right:0;
+  height:2px;
+  background:linear-gradient(90deg,var(--accent),var(--accent2));
+}
+
+.progress-label{
+  font-size:11px;
+  text-transform:uppercase;
+  letter-spacing:3px;
+  color:var(--muted);
+  margin-bottom:10px;
+}
+
+.progress-bar-wrap{
+  background:#0a1525;
+  border-radius:999px;
+  height:8px;
+  overflow:hidden;
+  margin:12px auto;
+  max-width:500px;
+}
+.progress-bar-fill{
+  height:100%;
+  background:linear-gradient(90deg,var(--accent),var(--accent2));
+  border-radius:999px;
+  width:0%;
+  transition:width 0.5s ease;
+}
+
+.progress-text{
+  font-size:22px;
+  font-weight:700;
+  color:var(--accent2);
+}
+
+.phase{
+  margin-bottom:36px;
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:14px;
+  overflow:hidden;
+}
+
+.phase-header{
+  padding:18px 22px;
+  display:flex;
+  align-items:center;
+  gap:12px;
+  border-bottom:1px solid var(--border);
+}
+
+.phase-dot{
+  width:10px;
+  height:10px;
+  border-radius:50%;
+  flex-shrink:0;
+}
+
+.phase-header h2{
+  font-family:'Syne',sans-serif;
+  font-size:16px;
+  font-weight:700;
+}
+
+.phase-progress{
+  margin-left:auto;
+  font-size:12px;
+  color:var(--muted);
+  white-space:nowrap;
+}
+
+table{width:100%;border-collapse:collapse;}
+
+th{
+  background:#091220;
+  padding:10px 14px;
+  text-align:left;
+  font-size:10px;
+  text-transform:uppercase;
+  letter-spacing:2px;
+  color:var(--muted);
+  border-bottom:1px solid var(--border);
+  font-weight:600;
+}
+
+td{
+  padding:12px 14px;
+  border-bottom:1px solid rgba(30,58,95,0.4);
+  font-size:13px;
+  vertical-align:top;
+  line-height:1.5;
+}
+
+tr:last-child td{border-bottom:none;}
+
+tr:hover td{background:rgba(0,212,255,0.02);}
+
+.date-cell{
+  white-space:nowrap;
+  color:var(--muted);
+  font-size:12px;
+  width:70px;
+}
+
+.topic-cell{
+  font-weight:600;
+  color:var(--text);
+  font-size:12px;
+  width:220px;
+}
+
+.task-cell{
+  color:#8aa8c8;
+  font-size:12px;
+}
+
+.resource-cell{
+  font-size:11px;
+  width:260px;
+}
+
+.resource-link{
+  display:inline-flex;
+  align-items:center;
+  gap:5px;
+  color:var(--accent);
+  text-decoration:none;
+  margin-bottom:4px;
+  font-size:11px;
+  padding:2px 0;
+  border-bottom:1px dashed rgba(0,212,255,0.25);
+  transition:color 0.2s, border-color 0.2s;
+  word-break:break-word;
+}
+.resource-link:hover{color:var(--accent2);border-color:var(--accent2);}
+.resource-link .tag{
+  font-size:9px;
+  background:rgba(0,212,255,0.1);
+  color:var(--accent);
+  border-radius:3px;
+  padding:1px 5px;
+  white-space:nowrap;
+  text-transform:uppercase;
+  letter-spacing:0.5px;
+}
+
+.resource-ref{
+  color:var(--muted);
+  font-size:10px;
+  margin-top:3px;
+}
+.resource-ref a{
+  color:var(--muted);
+  text-decoration:none;
+  border-bottom:1px dashed rgba(74,106,138,0.4);
+}
+.resource-ref a:hover{color:var(--text);}
+
+.check-cell{
+  width:50px;
+  text-align:center;
+}
+
+input[type="checkbox"]{
+  appearance:none;
+  width:18px;
+  height:18px;
+  border:1.5px solid var(--border);
+  border-radius:4px;
+  cursor:pointer;
+  background:transparent;
+  position:relative;
+  transition:all 0.2s;
+}
+input[type="checkbox"]:checked{
+  background:var(--accent2);
+  border-color:var(--accent2);
+}
+input[type="checkbox"]:checked::after{
+  content:'✓';
+  position:absolute;
+  top:50%;left:50%;
+  transform:translate(-50%,-50%);
+  color:#070d1a;
+  font-size:12px;
+  font-weight:bold;
+}
+input[type="checkbox"]:hover{border-color:var(--accent);}
+
+.dsa-section{margin-bottom:36px;}
+
+.dsa-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:16px;
+  padding:20px 22px;
+}
+
+.dsa-card{
+  background:var(--surface2);
+  border:1px solid var(--border);
+  border-radius:10px;
+  padding:16px;
+}
+
+.dsa-card h3{
+  font-size:12px;
+  text-transform:uppercase;
+  letter-spacing:2px;
+  color:var(--muted);
+  margin-bottom:8px;
+}
+
+.dsa-card p{
+  font-size:13px;
+  color:var(--text);
+  margin-bottom:8px;
+}
+
+.dsa-card a{
+  font-size:11px;
+  color:var(--accent);
+  text-decoration:none;
+  border-bottom:1px dashed rgba(0,212,255,0.3);
+}
+
+.exit-section{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:14px;
+  margin-bottom:24px;
+  overflow:hidden;
+}
+
+.section-header{
+  padding:16px 22px;
+  border-bottom:1px solid var(--border);
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+.section-header h2{
+  font-family:'Syne',sans-serif;
+  font-size:15px;
+  font-weight:700;
+}
+
+.exit-list{padding:20px 22px;display:flex;flex-direction:column;gap:12px;}
+
+.exit-item{
+  display:flex;
+  align-items:flex-start;
+  gap:12px;
+  padding:10px 14px;
+  background:var(--surface2);
+  border-radius:8px;
+  border:1px solid transparent;
+  transition:border-color 0.2s;
+}
+.exit-item:hover{border-color:var(--border);}
+.exit-item label{font-size:13px;cursor:pointer;line-height:1.4;}
+
+.rules-section{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:14px;
+  overflow:hidden;
+}
+
+.rules-list{
+  padding:20px 22px;
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+  list-style:none;
+}
+
+.rules-list li{
+  display:flex;
+  align-items:flex-start;
+  gap:10px;
+  font-size:13px;
+  color:var(--text);
+  line-height:1.5;
+}
+
+.rules-list li::before{
+  content:'→';
+  color:var(--accent3);
+  flex-shrink:0;
+  margin-top:1px;
+}
+
+.phase1-color{color:var(--phase1);}
+.phase2-color{color:var(--phase2);}
+.phase3-color{color:var(--phase3);}
+.phase4-color{color:var(--phase4);}
+.phase5-color{color:var(--phase5);}
+
+@media(max-width:700px){
+  body{padding:20px 12px;}
+  .resource-cell{display:none;}
+  .dsa-grid{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+
+<h1>Backend Roadmap Tracker</h1>
+<p class="subtitle">June 7 – July 20 &nbsp;·&nbsp; EDU2JOB + Code Review Engine</p>
+
+<div class="progress-box">
+  <div class="progress-label">Overall Progress</div>
+  <div class="progress-bar-wrap"><div class="progress-bar-fill" id="progressBar"></div></div>
+  <div class="progress-text" id="progressText">0 / 0 Tasks</div>
+</div>
+
+<!-- PHASE 1 -->
+<div class="phase">
+  <div class="phase-header">
+    <div class="phase-dot" style="background:var(--phase1)"></div>
+    <h2 class="phase1-color">Phase 1 — Spring Boot + REST + JPA &nbsp;<span style="color:var(--muted);font-weight:400;font-size:13px">Jun 7 – Jun 20</span></h2>
+    <span class="phase-progress" id="p1prog"></span>
+  </div>
+  <table>
+    <tr><th>Date</th><th>Topic</th><th>Task</th><th>Resources</th><th>Done</th></tr>
+
+    <tr>
+      <td class="date-cell">Jun 7</td>
+      <td class="topic-cell">Project structure, Beans, DI, @SpringBootApplication</td>
+      <td class="task-cell">Draw EDU2JOB component map — controllers, services, repos</td>
+      <td class="resource-cell">
+        <a class="resource-link" href="https://www.youtube.com/watch?v=9SGDpanrc8U" target="_blank"><span class="tag">YT</span> Amigoscode — Spring Boot Full Tutorial</a>
+        <div class="resource-ref">Start here, covers full REST API build (3hrs)</div>
+      </td>
+      <td class="check-cell"><input type="checkbox" class="task" data-phase="1"></td>
+    </tr>
+
+    <tr>
+      <td class="date-cell">Jun 8</td>
+      <td class="topic-cell">@RestController, @RequestMapping, Request/Response Flow</td>
+      <td class="task-cell">Rewrite AuthController from scratch without looking at EDU2JOB</td>
+      <td class="resource-cell">
+        <a class="resource-link" href="https://www.youtube.com/watch?v=9SGDpanrc8U" target="_blank"><span class="tag">YT</span> Amigoscode — Spring Boot (same video, continue)</a>
+        <div class="resource-ref">Focus on controller + routing sections</div>
+      </td>
+      <td class="check-cell"><input type="checkbox" class="task" data-phase="1"></td>
+    </tr>
+
+    <tr>
+      <td class="date-cell">Jun 9</td>
+      <td class="topic-cell">@RequestBody, @PathVariable, @RequestParam, ResponseEntity</td>
+      <td class="task-cell">Add proper status codes to every EDU2JOB endpoint</td>
+      <td class="resource-cell">
+        <a class="resource-link" href="https://spring.io/guides" target="_blank"><span class="tag">Docs</span> spring.io/guides</a>
+        <div class="resource-ref">Reference when stuck on specific annotations</div>
+      </td>
+      <td class="check-cell"><input type="checkbox" class="task" data-phase="1"></td>
+    </tr>
+
+    <tr>
+      <td class="date-cell">Jun 10</td>
+      <td class="topic-cell">Exception Handling, @ControllerAdvice, @ExceptionHandler</td>
+      <td class="task-cell">Fix all raw 500 responses in EDU2JOB</td>
+      <td class="resource-cell">
+        <a class="resource-link" href="https://www.baeldung.com/exception-handling-for-rest-with-spring" target="_blank"><span class="tag">Baeldung</span> Exception Handling for REST</a>
+        <div class="resource-ref">Best reference for @ControllerAdvice patterns</div>
+      </td>
+      <td class="check-cell"><input type="checkbox" class="task" data-phase="1"></td>
+    </tr>
+
+    <tr>
+      <td class="date-cell">Jun 11</td>
+      <td class="topic-cell">Service Layer, @Service</td>
+      <td class="task-cell">Move business logic out of controllers</td>
+      <td class="resource-cell">
+        <a class="resource-link" href="https://www.youtube.com/watch?v=9SGDpanrc8U" target="_blank"><span class="tag">YT</span> Amigoscode — service layer section</a>
+        <div class="resource-ref">Same video — skip to service layer segment</div>
+      </td>
+      <td class="check-cell"><input type="checkbox" class="task" data-phase="1"></td>
+    </tr>
+
+    <tr>
+      <td class="date-cell">Jun 12</td>
+      <td class="topic-cell">Build Day</td>
+      <td class="task-cell">Rewrite PredictionController + ProfileController cleanly</td>
+      <td class="resource-cell">
+        <div class="resource-ref">No new resources — build from memory</div>
+      </td>
+      <td class="check-cell"><input type="checkbox" class="task" data-phase="1"></td>
+    </tr>
+
+    <tr>
+      <td class="date-cell">Jun 13</td>
+      <td class="topic-cell">Weekend Project</td>
+      <td class="task-cell">Build Student CRUD API from scratch (Register, Login, CRUD)</td>
+      <td class="resource-cell">
+        <a class="resource-link" href="https://www.youtube.com/watch?v=9SGDpanrc8U" target="_blank"><span class="tag">YT</span> Amigoscode — Spring Boot (reference)</a>
+        <div class="resource-ref">Use only when truly stuck, build first</div>
+      </td>
+      <td class="check-cell"><input type="checkbox" class="task" data-phase="1"></td>
+    </tr>
+
+    <tr>
+      <td class="date-cell">Jun 14</td>
+      <td class="topic-cell">@Entity, @Table, @Id, @GeneratedValue</td>
+      <td class="task-cell">Remap EDU2JOB User Entity manually</td>
+      <td class="resource-cell">
+        <a class="resource-link" href="https://www.youtube.com/watch?v=8SGI_XS5OPw" target="_blank"><span class="tag">YT</span> Amigoscode — JPA & Hibernate</a>
+        <div class="resource-ref">Primary source for all JPA days (Jun 14–19)</div>
+      </td>
+      <td class="check-cell"><input type="checkbox" class="task" data-phase="1"></td>
+    </tr>
+
+    <tr>
+      <td class="date-cell">Jun 15</td>
+      <td class="topic-cell">@OneToMany, @ManyToOne</td>
+      <td class="task-cell">Map UserPredictionHistory relationships properly</td>
+      <td class="resource-cell">
+        <a class="resource-link" href="https://www.baeldung.com/hibernate-one-to-many" target="_blank"><span class="tag">Baeldung</span> One-to-Many Mapping Guide</a>
+        <div class="resource-ref">Clearest written reference for relationship annotations</div>
+      </td>
+      <td class="check-cell"><input type="checkbox" class="task" data-phase="1"></td>
+    </tr>
+
+    <tr>
+      <td class="date-cell">Jun 16</td>
+      <td class="topic-cell">JpaRepository, JPQL, @Query</td>
+      <td class="task-cell">Write 3 custom queries</td>
+      <td class="resource-cell">
+        <a class="resource-link" href="https://www.baeldung.com/learn-jpa-hibernate" target="_blank"><span class="tag">Baeldung</span> JPA & Hibernate Hub</a>
+        <div class="resource-ref">Bookmark — use for @Query / JPQL specifics</div>
+      </td>
+      <td class="check-cell"><input type="checkbox" class="task" data-phase="1"></td>
+    </tr>
+
+    <tr>
+      <td class="date-cell">Jun 17</td>
+      <td class="topic-cell">LAZY vs EAGER, N+1 Problem</td>
+      <td class="task-cell">Find and fix N+1 issues in EDU2JOB</td>
+      <td class="resource-cell">
+        <a class="resource-link" href="https://www.baeldung.com/hibernate-lazy-eager-loading" target="_blank"><span class="tag">Baeldung</span> Lazy vs Eager Loading</a>
+        <div class="resource-ref">Also search "N+1 Hibernate Baeldung" — dedicated article</div>
+      </td>
+      <td class="check-cell"><input type="checkbox" class="task" data-phase="1"></td>
+    </tr>
+
+    <tr>
+      <td class="date-cell">Jun 18</td>
+      <td class="topic-cell">@Transactional</td>
+      <td class="task-cell">Add transactions to prediction save flow</td>
+      <td class="resource-cell">
+        <a class="resource-link" href="https://www.baeldung.com/transaction-configuration-with-jpa-and-spring" target="_blank"><span class="tag">Baeldung</span> @Transactional in Spring</a>
+        <div class="resource-ref">Covers propagation, rollback rules clearly</div>
+      </td>
+      <td class="check-cell"><input type="checkbox" class="task" data-phase="1"></td>
+    </tr>
+
+    <tr>
+      <td class="date-cell">Jun 19</td>
+      <td class="topic-cell">Build Day</td>
+      <td class="task-cell">Add full JPA layer to Student CRUD API</td>
+      <td class="resource-cell">
+        <div class="resource-ref">No new resources — build from memory</div>
+      </td>
+      <td class="check-cell"><input type="checkbox" class="task" data-phase="1"></td>
+    </tr>
+
+    <tr>
+      <td class="date-cell">Jun 20</td>
+      <td class="topic-cell">Weekend Review</td>
+      <td class="task-cell">Complete EDU2JOB backend read-through, document unknowns</td>
+      <td class="resource-cell">
+        <div class="resource-ref">Review your own notes + Baeldung for gaps only</div>
+      </td>
+      <td class="check-cell"><input type="checkbox" class="task" data-phase="1"></td>
+    </tr>
+
+  </table>
+</div>
+
+<!-- PHASE 2 -->
+<div class="phase">
+  <div class="phase-header">
+    <div class="phase-dot" style="background:var(--phase2)"></div>
+    <h2 class="phase2-color">Phase 2 — Spring Security + JWT + RBAC &nbsp;<span style="color:var(--muted);font-weight:400;font-size:13px">Jun 21 – Jul 1</span></h2>
+    <span class="phase-progress" id="p2prog"></span>
+  </div>
+  <table>
+    <tr><th>Date</th><th>Topic</th><th>Task</th><th>Resources</th><th>Done</th></tr>
+
+    <tr>
+      <td class="date-cell">Jun 21</td>
+      <td class="topic-cell">Security Filter Chain</td>
+      <td class="task-cell">Draw the request flow diagram</td>
+      <td class="resource-cell">
+        <a class="resource-link" href="https://www.youtube.com/watch?v=b9O9NI-RJ3o" target="_blank"><span class="tag">YT</span> Amigoscode — Spring Security</a>
+        <div class="resource-ref">Primary for all Phase 2 (covers UserDetails, filters, JWT)</div>
+      </td>
+      <td class="check-cell"><input type="checkbox" class="task" data-phase="2"></td>
+    </tr>
+
+    <tr>
+      <td class="date-cell">Jun 22</td>
+      <td class="topic-cell">UserDetails & UserDetailsService</td>
+      <td class="task-cell">Implement properly in EDU2JOB</td>
+      <td class="resource-cell">
+        <a class="resource-link" href="https://www.youtube.com/watch?v=b9O9NI-RJ3o" target="_blank"><span class="tag">YT</span> Amigoscode — Spring Security (cont.)</a>
+        <div class="resource-ref">Continue from previous day</div>
+      </td>
+      <td class="check-cell"><input type="checkbox" class="task" data-phase="2"></td>
+    </tr>
+
+    <tr>
+      <td class="date-cell">Jun 23</td>
+      <td class="topic-cell">JWT Deep Dive</td>
+      <td class="task-cell">Decode EDU2JOB token, explain every field</td>
+      <td class="resource-cell">
+        <a class="resource-link" href="https://jwt.io" target="_blank"><span class="tag">Tool</span> jwt.io Debugger</a>
+        <div class="resource-ref">Paste your EDU2JOB token — inspect header, payload, signature live</div>
+      </td>
+      <td class="check-cell"><input type="checkbox" class="task" data-phase="2"></td>
+    </tr>
+
+    <tr>
+      <td class="date-cell">Jun 24</td>
+      <td class="topic-cell">OncePerRequestFilter</td>
+      <td class="task-cell">Create JwtAuthFilter from scratch</td>
+      <td class="resource-cell">
+        <a class="resource-link" href="https://www.youtube.com/watch?v=b9O9NI-RJ3o" target="_blank"><span class="tag">YT</span> Amigoscode — filter section</a>
+        <div class="resource-ref">Skip to OncePerRequestFilter segment in same video</div>
+      </td>
+      <td class="check-cell"><input type="checkbox" class="task" data-phase="2"></td>
+    </tr>
+
+    <tr>
+      <td class="date-cell">Jun 25</td>
+      <td class="topic-cell">Protected Routes</td>
+      <td class="task-cell">Verify 401 for unauthorized requests</td>
+      <td class="resource-cell">
+        <div class="resource-ref">Test with Postman — no new resource needed</div>
+      </td>
+      <td class="check-cell"><input type="checkbox" class="task" data-phase="2"></td>
+    </tr>
+
+    <tr>
+      <td class="date-cell">Jun 26</td>
+      <td class="topic-cell">RBAC & Roles</td>
+      <td class="task-cell">Add USER and ADMIN roles</td>
+      <td class="resource-cell">
+        <a class="resource-link" href="https://www.baeldung.com/spring-security-method-security" target="_blank"><span class="tag">Baeldung</span> @PreAuthorize & Method Security</a>
+        <div class="resource-ref">Primary reference for RBAC implementation</div>
+      </td>
+      <td class="check-cell"><input type="checkbox" class="task" data-phase="2"></td>
+    </tr>
+
+    <tr>
+      <td class="date-cell">Jun 27</td>
+      <td class="topic-cell">JWT Role Claims</td>
+      <td class="task-cell">Embed role in token</td>
+      <td class="resource-cell">
+        <a class="resource-link" href="https://jwt.io" target="_blank"><span class="tag">Tool</span> jwt.io — verify claim structure</a>
+        <div class="resource-ref">Decode updated token to confirm role claim is present</div>
+      </td>
+      <td class="check-cell"><input type="checkbox" class="task" data-phase="2"></td>
+    </tr>
+
+    <tr>
+      <td class="date-cell">Jun 28</td>
+      <td class="topic-cell">@PreAuthorize</td>
+      <td class="task-cell">Add admin-only endpoint</td>
+      <td class="resource-cell">
+        <a class="resource-link" href="https://www.baeldung.com/spring-security-method-security" target="_blank"><span class="tag">Baeldung</span> Method Security (same article)</a>
+        <div class="resource-ref">Covers hasRole(), hasAuthority(), SpEL expressions</div>
+      </td>
+      <td class="check-cell"><input type="checkbox" class="task" data-phase="2"></td>
+    </tr>
+
+    <tr>
+      <td class="date-cell">Jun 29</td>
+      <td class="topic-cell">Security Audit</td>
+      <td class="task-cell">Document endpoint access levels</td>
+      <td class="resource-cell">
+        <div class="resource-ref">No new resource — audit using Postman + your notes</div>
+      </td>
+      <td class="check-cell"><input type="checkbox" class="task" data-phase="2"></td>
+    </tr>
+
+    <tr>
+      <td class="date-cell">Jun 30</td>
+      <td class="topic-cell">Buffer Day</td>
+      <td class="task-cell">Fix integration issues</td>
+      <td class="resource-cell">
+        <div class="resource-ref">Use Baeldung for any specific error you hit</div>
+      </td>
+      <td class="check-cell"><input type="checkbox" class="task" data-phase="2"></td>
+    </tr>
+
+    <tr>
+      <td class="date-cell">Jul 1</td>
+      <td class="topic-cell">Checkpoint</td>
+      <td class="task-cell">Document all APIs with Postman</td>
+      <td class="resource-cell">
+        <div class="resource-ref">Postman — export collection as JSON for resume proof</div>
+      </td>
+      <td class="check-cell"><input type="checkbox" class="task" data-phase="2"></td>
+    </tr>
+
+  </table>
+</div>
+
+<!-- PHASE 3 -->
+<div class="phase">
+  <div class="phase-header">
+    <div class="phase-dot" style="background:var(--phase3)"></div>
+    <h2 class="phase3-color">Phase 3 — Docker &nbsp;<span style="color:var(--muted);font-weight:400;font-size:13px">Jul 2 – Jul 6</span></h2>
+    <span class="phase-progress" id="p3prog"></span>
+  </div>
+  <table>
+    <tr><th>Date</th><th>Topic</th><th>Task</th><th>Resources</th><th>Done</th></tr>
+
+    <tr>
+      <td class="date-cell">Jul 2</td>
+      <td class="topic-cell">Docker Basics</td>
+      <td class="task-cell">Containerize EDU2JOB</td>
+      <td class="resource-cell">
+        <a class="resource-link" href="https://www.youtube.com/watch?v=3c-iBn73dDE" target="_blank"><span class="tag">YT</span> TechWorld with Nana — Docker for Beginners</a>
+        <div class="resource-ref">Best Docker video in existence (3hrs). Primary for Jul 2–4.</div>
+      </td>
+      <td class="check-cell"><input type="checkbox" class="task" data-phase="3"></td>
+    </tr>
+
+    <tr>
+      <td class="date-cell">Jul 3</td>
+      <td class="topic-cell">Docker Compose</td>
+      <td class="task-cell">EDU2JOB + MySQL with compose</td>
+      <td class="resource-cell">
+        <a class="resource-link" href="https://docs.docker.com/compose/gettingstarted/" target="_blank"><span class="tag">Docs</span> docs.docker.com/compose</a>
+        <div class="resource-ref">Official docs — cleaner than any tutorial for compose syntax</div>
+      </td>
+      <td class="check-cell"><input type="checkbox" class="task" data-phase="3"></td>
+    </tr>
+
+    <tr>
+      <td class="date-cell">Jul 4</td>
+      <td class="topic-cell">Environment Variables</td>
+      <td class="task-cell">Move JWT secrets to .env</td>
+      <td class="resource-cell">
+        <a class="resource-link" href="https://docs.docker.com/compose/environment-variables/" target="_blank"><span class="tag">Docs</span> Docker Compose env vars</a>
+        <div class="resource-ref">Official reference for .env file handling in compose</div>
+      </td>
+      <td class="check-cell"><input type="checkbox" class="task" data-phase="3"></td>
+    </tr>
+
+    <tr>
+      <td class="date-cell">Jul 5</td>
+      <td class="topic-cell">Start Code Review Engine</td>
+      <td class="task-cell">Design architecture & flow</td>
+      <td class="resource-cell">
+        <div class="resource-ref">No external resource — draw the system on paper first</div>
+      </td>
+      <td class="check-cell"><input type="checkbox" class="task" data-phase="3"></td>
+    </tr>
+
+    <tr>
+      <td class="date-cell">Jul 6</td>
+      <td class="topic-cell">Weekend Build</td>
+      <td class="task-cell">Dockerize CRE with Redis</td>
+      <td class="resource-cell">
+        <a class="resource-link" href="https://www.youtube.com/watch?v=3c-iBn73dDE" target="_blank"><span class="tag">YT</span> TechWorld with Nana (multi-container section)</a>
+        <div class="resource-ref">Multi-service compose coverage in same video</div>
+      </td>
+      <td class="check-cell"><input type="checkbox" class="task" data-phase="3"></td>
+    </tr>
+
+  </table>
+</div>
+
+<!-- PHASE 4 -->
+<div class="phase">
+  <div class="phase-header">
+    <div class="phase-dot" style="background:var(--phase4)"></div>
+    <h2 class="phase4-color">Phase 4 — AWS &nbsp;<span style="color:var(--muted);font-weight:400;font-size:13px">Jul 7 – Jul 13</span></h2>
+    <span class="phase-progress" id="p4prog"></span>
+  </div>
+  <table>
+    <tr><th>Date</th><th>Topic</th><th>Task</th><th>Resources</th><th>Done</th></tr>
+
+    <tr>
+      <td class="date-cell">Jul 7</td>
+      <td class="topic-cell">AWS Setup</td>
+      <td class="task-cell">Create EC2 and SSH access</td>
+      <td class="resource-cell">
+        <a class="resource-link" href="https://www.youtube.com/watch?v=ulprqHHWlng" target="_blank"><span class="tag">YT</span> FreeCodeCamp — AWS Full Course</a>
+        <div class="resource-ref">Primary for Jul 7–11. Covers EC2, S3, RDS practically.</div>
+      </td>
+      <td class="check-cell"><input type="checkbox" class="task" data-phase="4"></td>
+    </tr>
+
+    <tr>
+      <td class="date-cell">Jul 8</td>
+      <td class="topic-cell">Deploy EDU2JOB</td>
+      <td class="task-cell">Run Docker container on EC2</td>
+      <td class="resource-cell">
+        <a class="resource-link" href="https://www.youtube.com/watch?v=OHerCIcNAHI" target="_blank"><span class="tag">YT</span> Amigoscode — Deploy Spring Boot to EC2</a>
+        <div class="resource-ref">Exact walkthrough for your use case — follow this closely</div>
+      </td>
+      <td class="check-cell"><input type="checkbox" class="task" data-phase="4"></td>
+    </tr>
+
+    <tr>
+      <td class="date-cell">Jul 9</td>
+      <td class="topic-cell">RDS</td>
+      <td class="task-cell">Connect EDU2JOB to RDS MySQL</td>
+      <td class="resource-cell">
+        <a class="resource-link" href="https://www.youtube.com/watch?v=ulprqHHWlng" target="_blank"><span class="tag">YT</span> FreeCodeCamp — AWS (RDS section)</a>
+        <div class="resource-ref">Skip to RDS segment. Check AWS free tier limits first.</div>
+      </td>
+      <td class="check-cell"><input type="checkbox" class="task" data-phase="4"></td>
+    </tr>
+
+    <tr>
+      <td class="date-cell">Jul 10</td>
+      <td class="topic-cell">Live Deployment 🚨</td>
+      <td class="task-cell">Public URL working — mandatory deadline</td>
+      <td class="resource-cell">
+        <a class="resource-link" href="https://aws.amazon.com/free" target="_blank"><span class="tag">Docs</span> AWS Free Tier</a>
+        <div class="resource-ref">Know what's free before you accidentally spend money</div>
+      </td>
+      <td class="check-cell"><input type="checkbox" class="task" data-phase="4"></td>
+    </tr>
+
+    <tr>
+      <td class="date-cell">Jul 11</td>
+      <td class="topic-cell">S3</td>
+      <td class="task-cell">Create bucket and understand use case</td>
+      <td class="resource-cell">
+        <a class="resource-link" href="https://www.youtube.com/watch?v=ulprqHHWlng" target="_blank"><span class="tag">YT</span> FreeCodeCamp — AWS (S3 section)</a>
+        <div class="resource-ref">S3 basics + bucket policy fundamentals</div>
+      </td>
+      <td class="check-cell"><input type="checkbox" class="task" data-phase="4"></td>
+    </tr>
+
+    <tr>
+      <td class="date-cell">Jul 12</td>
+      <td class="topic-cell">CRE Build Day</td>
+      <td class="task-cell">POST /api/review endpoint</td>
+      <td class="resource-cell">
+        <div class="resource-ref">No new resource — apply Phase 1 Spring Boot knowledge</div>
+      </td>
+      <td class="check-cell"><input type="checkbox" class="task" data-phase="4"></td>
+    </tr>
+
+    <tr>
+      <td class="date-cell">Jul 13</td>
+      <td class="topic-cell">Weekend Build</td>
+      <td class="task-cell">Redis consumer + Gemini API integration</td>
+      <td class="resource-cell">
+        <a class="resource-link" href="https://www.youtube.com/watch?v=WgRCqEdE9EM" target="_blank"><span class="tag">YT</span> Amigoscode — Redis & Spring Boot</a>
+        <div class="resource-ref">Primary for Redis work starting here</div>
+      </td>
+      <td class="check-cell"><input type="checkbox" class="task" data-phase="4"></td>
+    </tr>
+
+  </table>
+</div>
+
+<!-- PHASE 5 -->
+<div class="phase">
+  <div class="phase-header">
+    <div class="phase-dot" style="background:var(--phase5)"></div>
+    <h2 class="phase5-color">Phase 5 — Redis + WebSockets &nbsp;<span style="color:var(--muted);font-weight:400;font-size:13px">Jul 14 – Jul 20</span></h2>
+    <span class="phase-progress" id="p5prog"></span>
+  </div>
+  <table>
+    <tr><th>Date</th><th>Topic</th><th>Task</th><th>Resources</th><th>Done</th></tr>
+
+    <tr>
+      <td class="date-cell">Jul 14</td>
+      <td class="topic-cell">Redis Queue</td>
+      <td class="task-cell">Status tracking: PENDING → PROCESSING → DONE</td>
+      <td class="resource-cell">
+        <a class="resource-link" href="https://www.youtube.com/watch?v=WgRCqEdE9EM" target="_blank"><span class="tag">YT</span> Amigoscode — Redis & Spring Boot (cont.)</a>
+        <div class="resource-ref">Continue from Jul 13. Focus on queue + pub/sub.</div>
+      </td>
+      <td class="check-cell"><input type="checkbox" class="task" data-phase="5"></td>
+    </tr>
+
+    <tr>
+      <td class="date-cell">Jul 15</td>
+      <td class="topic-cell">WebSockets</td>
+      <td class="task-cell">STOMP + WebSocket setup</td>
+      <td class="resource-cell">
+        <a class="resource-link" href="https://www.youtube.com/watch?v=OK3GIHPxBFs" target="_blank"><span class="tag">YT</span> Daily Code Buffer — WebSockets Spring Boot</a>
+        <div class="resource-ref">STOMP + Spring. Exactly what CRE needs. Primary for Jul 15–16.</div>
+      </td>
+      <td class="check-cell"><input type="checkbox" class="task" data-phase="5"></td>
+    </tr>
+
+    <tr>
+      <td class="date-cell">Jul 16</td>
+      <td class="topic-cell">Realtime Delivery</td>
+      <td class="task-cell">Send Gemini response via WebSocket</td>
+      <td class="resource-cell">
+        <a class="resource-link" href="https://www.baeldung.com/spring-data-redis-tutorial" target="_blank"><span class="tag">Baeldung</span> Spring Data Redis</a>
+        <div class="resource-ref">Reference if Redis → WebSocket bridge has gaps</div>
+      </td>
+      <td class="check-cell"><input type="checkbox" class="task" data-phase="5"></td>
+    </tr>
+
+    <tr>
+      <td class="date-cell">Jul 17</td>
+      <td class="topic-cell">Complexity Analysis</td>
+      <td class="task-cell">Detect nested loops & O(n²)</td>
+      <td class="resource-cell">
+        <div class="resource-ref">Custom implementation — no tutorial for this. Design the logic yourself.</div>
+      </td>
+      <td class="check-cell"><input type="checkbox" class="task" data-phase="5"></td>
+    </tr>
+
+    <tr>
+      <td class="date-cell">Jul 18</td>
+      <td class="topic-cell">Integration Day</td>
+      <td class="task-cell">Wire full flow together</td>
+      <td class="resource-cell">
+        <div class="resource-ref">No new resource — debug and integrate</div>
+      </td>
+      <td class="check-cell"><input type="checkbox" class="task" data-phase="5"></td>
+    </tr>
+
+    <tr>
+      <td class="date-cell">Jul 19</td>
+      <td class="topic-cell">AWS Deploy</td>
+      <td class="task-cell">Deploy CRE skeleton on EC2</td>
+      <td class="resource-cell">
+        <a class="resource-link" href="https://www.youtube.com/watch?v=OHerCIcNAHI" target="_blank"><span class="tag">YT</span> Amigoscode — EC2 Deploy (same video)</a>
+        <div class="resource-ref">Same deploy process as EDU2JOB</div>
+      </td>
+      <td class="check-cell"><input type="checkbox" class="task" data-phase="5"></td>
+    </tr>
+
+    <tr>
+      <td class="date-cell">Jul 20</td>
+      <td class="topic-cell">Final Checkpoint</td>
+      <td class="task-cell">EDU2JOB Live + CRE 40% Complete</td>
+      <td class="resource-cell">
+        <div class="resource-ref">Review exit criteria below. Everything should be demoable.</div>
+      </td>
+      <td class="check-cell"><input type="checkbox" class="task" data-phase="5"></td>
+    </tr>
+
+  </table>
+</div>
+
+<!-- DSA -->
+<div class="phase dsa-section">
+  <div class="phase-header">
+    <div class="phase-dot" style="background:#f472b6"></div>
+    <h2 style="color:#f472b6">Daily DSA &nbsp;<span style="color:var(--muted);font-weight:400;font-size:13px">Non-Negotiable</span></h2>
+  </div>
+  <div class="dsa-grid">
+    <div class="dsa-card">
+      <h3>Weekdays</h3>
+      <p>1.5–2 hrs → 2 Mediums OR 1 Hard</p>
+      <a href="https://leetcode.com/u/siva_2853/" target="_blank">leetcode.com — siva_2853</a>
+    </div>
+    <div class="dsa-card">
+      <h3>Weekends</h3>
+      <p>2.5–3 hrs → Contest Problem OR Weak Topic</p>
+      <a href="https://neetcode.io/roadmap" target="_blank">neetcode.io — when you hit a weak topic</a>
+    </div>
+  </div>
+</div>
+
+<!-- EXIT CRITERIA -->
+<div class="exit-section">
+  <div class="section-header">
+    <div class="phase-dot" style="background:#fbbf24"></div>
+    <h2 style="color:#fbbf24">July 20 Exit Criteria</h2>
+  </div>
+  <div class="exit-list">
+    <div class="exit-item"><input type="checkbox" class="task" data-phase="exit"><label>I can explain every line of EDU2JOB</label></div>
+    <div class="exit-item"><input type="checkbox" class="task" data-phase="exit"><label>EDU2JOB is live on AWS with a real URL</label></div>
+    <div class="exit-item"><input type="checkbox" class="task" data-phase="exit"><label>RBAC is real and demo-ready</label></div>
+    <div class="exit-item"><input type="checkbox" class="task" data-phase="exit"><label>CRE accepts code, queues it, reviews it, returns via WebSocket</label></div>
+    <div class="exit-item"><input type="checkbox" class="task" data-phase="exit"><label>CRE deployed publicly on EC2</label></div>
+    <div class="exit-item"><input type="checkbox" class="task" data-phase="exit"><label>I can explain every architectural decision</label></div>
+  </div>
+</div>
+
+<!-- RULES -->
+<div class="rules-section" style="margin-top:24px;">
+  <div class="section-header">
+    <div class="phase-dot" style="background:var(--accent3)"></div>
+    <h2 style="color:var(--accent3)">Hard Rules</h2>
+  </div>
+  <ul class="rules-list">
+    <li>EDU2JOB is the learning lab for Phases 1–2.</li>
+    <li>CRE starts July 5 and runs in parallel.</li>
+    <li>July 10 = mandatory EDU2JOB live deployment deadline.</li>
+    <li>No new projects until CRE is deployed.</li>
+    <li>If a day fails, adjust tomorrow — no all-nighters.</li>
+    <li>Watch at 1.5x, pause when they build, close and build it yourself. If you can't do it without the video, you didn't learn it.</li>
+    <li>Baeldung is your dictionary — don't read top to bottom. Use when stuck on something specific.</li>
+  </ul>
+</div>
+
+<script>
+const tasks = document.querySelectorAll('.task');
+const phaseMap = { '1': [], '2': [], '3': [], '4': [], '5': [], 'exit': [] };
+
+tasks.forEach((task, index) => {
+  const saved = localStorage.getItem('task_' + index);
+  if (saved === 'true') task.checked = true;
+
+  const phase = task.dataset.phase;
+  if (phase && phaseMap[phase]) phaseMap[phase].push(task);
+
+  task.addEventListener('change', () => {
+    localStorage.setItem('task_' + index, task.checked);
+    updateAll();
+  });
+});
+
+function updateAll() {
+  const total = tasks.length;
+  let completed = 0;
+  tasks.forEach(t => { if (t.checked) completed++; });
+  const pct = total ? Math.round((completed / total) * 100) : 0;
+
+  document.getElementById('progressText').textContent =
+    `${completed} / ${total} Tasks Completed (${pct}%)`;
+  document.getElementById('progressBar').style.width = pct + '%';
+
+  ['1','2','3','4','5'].forEach(p => {
+    const arr = phaseMap[p];
+    if (!arr || !arr.length) return;
+    const done = arr.filter(t => t.checked).length;
+    const el = document.getElementById('p' + p + 'prog');
+    if (el) el.textContent = `${done}/${arr.length}`;
+  });
+}
+
+updateAll();
+</script>
+</body>
+</html>
